@@ -113,4 +113,4 @@ ENV SERVER_NAME=:80
 EXPOSE 80
 
 # Servidor HTTP
-CMD ["frankenphp", "php-server", "--root", "public"]
+CMD ["sh", "-c", "frankenphp php-server --root public --listen :${PORT:-80}"]
