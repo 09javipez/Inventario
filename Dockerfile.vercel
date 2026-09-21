@@ -1,0 +1,116 @@
+# ============================================================
+# VUZALO - Laravel 12 + PHP 8.2 + WireUI + Vite
+# Vercel + FrankenPHP
+# ============================================================
+
+# ------------------------------------------------------------
+# Etapa 1: instalar dependencias PHP
+# ------------------------------------------------------------
+FROM dunglas/frankenphp:php8.2-bookworm AS php-dependencies
+
+WORKDIR /app
+
+# Extensiones PHP necesarias para Laravel y tus paquetes
+RUN install-php-extensions \
+    pdo_mysql \
+    mbstring \
+    bcmath \
+    exif \
+    pcntl \
+    intl \
+    zip \
+    gd \
+    opcache
+
+# Composer desde la imagen oficial de Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copiar primero los archivos de Composer
+# para aprovechar la caché de Docker
+COPY composer.json composer.lock ./
+
+# Instalar dependencias de producción
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --prefer-dist \
+    --optimize-autoloader \
+    --no-scripts
+
+# ------------------------------------------------------------
+# Etapa 2: instalar Node y compilar Vite
+# ------------------------------------------------------------
+FROM node:24-bookworm AS frontend
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+
+RUN npm ci
+
+# Copiar los archivos necesarios para Vite/Tailwind
+COPY resources ./resources
+COPY public ./public
+COPY vite.config.js ./
+COPY tailwind.config.js ./
+COPY postcss.config.js ./
+
+# WireUI necesita vendor durante la compilación de Tailwind.
+# Copiamos vendor instalado por Composer desde la etapa anterior.
+COPY --from=php-dependencies /app/vendor ./vendor
+
+RUN npm run build
+
+# ------------------------------------------------------------
+# Etapa 3: imagen final
+# ------------------------------------------------------------
+FROM dunglas/frankenphp:php8.2-bookworm AS production
+
+WORKDIR /app
+
+# Extensiones necesarias
+RUN install-php-extensions \
+    pdo_mysql \
+    mbstring \
+    bcmath \
+    exif \
+    pcntl \
+    intl \
+    zip \
+    gd \
+    opcache
+
+# Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copiar el proyecto Laravel
+COPY . .
+
+# Copiar dependencias PHP instaladas
+COPY --from=php-dependencies /app/vendor ./vendor
+
+# Copiar los assets compilados por Vite
+COPY --from=frontend /app/public/build ./public/build
+
+# Permisos para Laravel
+RUN mkdir -p storage/framework/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+    storage/logs \
+    bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+# Configuración de producción
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+
+# Laravel será servido desde public/
+ENV SERVER_NAME=:80
+
+# El contenedor de Vercel debe escuchar en $PORT.
+# Caddy/FrankenPHP usará el puerto proporcionado por Vercel.
+EXPOSE 80
+
+# Servidor HTTP
+CMD ["frankenphp", "php-server", "--root", "public"]
