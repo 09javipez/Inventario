@@ -3,10 +3,10 @@
 .vercel
 
 node_modules
-vendor
 
 .env
 .env.*
+vendor
 
 public/hot
 public/storage
@@ -19,4 +19,10 @@ storage/framework/views/*
 
 tests
 phpunit.xml
+
 README.md
+
+.idea
+.vscode
+.DS_Store
+Thumbs.db
