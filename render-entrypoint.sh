@@ -6,6 +6,9 @@ php artisan config:clear
 echo "Running database migrations..."
 php artisan migrate --force
 
+echo "Seeding roles, permissions and default users (safe to run every boot)..."
+php artisan db:seed --class=RoleSeeder --force
+
 echo "Linking storage..."
 php artisan storage:link || true
 
