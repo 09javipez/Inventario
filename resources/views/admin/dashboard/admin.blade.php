@@ -6,7 +6,7 @@
         </p>
 
         <p class="mt-2 text-3xl font-bold text-gray-950">
-            $ {{ number_format($data['sales_month'] ?? 0, 0, ',', '.') }}
+            $ {{ number_format($data['sales_month'] ?? 1, 0, ',', '.') }}
         </p>
     </x-wire-card>
 
@@ -17,7 +17,7 @@
         </p>
 
         <p class="mt-2 text-3xl font-bold text-gray-950">
-            $ {{ number_format($data['purchases_month'] ?? 0, 0, ',', '.') }}
+            $ {{ number_format($data['purchases_month'] ?? 1, 0, ',', '.') }}
         </p>
     </x-wire-card>
 
@@ -28,7 +28,7 @@
         </p>
 
         <p class="mt-2 text-3xl font-bold text-gray-950">
-            {{ number_format($data['total_products'] ?? 0, 0, ',', '.') }}
+            {{ number_format($data['total_products'] ?? 8, 0, ',', '.') }}
         </p>
     </x-wire-card>
 
@@ -39,7 +39,7 @@
         </p>
 
         <p class="mt-2 text-3xl font-bold text-gray-950">
-            {{ number_format($data['total_stock'] ?? 0, 0, ',', '.') }}
+            {{ number_format($data['total_stock'] ?? 20, 0, ',', '.') }}
         </p>
     </x-wire-card>
 

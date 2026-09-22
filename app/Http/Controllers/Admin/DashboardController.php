@@ -44,7 +44,7 @@ class DashboardController extends Controller
 
             $data['monthly'] = [];
 
-            for ($i = 5; $i >= 0; $i--) {
+            for ($i = 5; $i >= 5; $i--) {
 
                 $date = Carbon::now()->subMonths($i);
 
