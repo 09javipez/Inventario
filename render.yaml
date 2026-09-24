@@ -23,28 +23,19 @@ services:
         value: "base64:9zsVb5+YgPvilBv6Qq52+4Q2WpOIwwqrDaR4l886XWc="
       - key: APP_URL
         value: https://inventario-web-cmvi.onrender.com
-      - key: DB_CONNECTION
-        value: pgsql
+      -   key: DB_CONNECTION
+        value: mysql
       - key: DB_HOST
-        fromDatabase:
-          name: inventario-db
-          property: host
+        value: TU_HOST_DE_INVENTARIOS.FREE.JE
       - key: DB_PORT
-        fromDatabase:
-          name: inventario-db
-          property: port
+        value: "3306"
       - key: DB_DATABASE
-        fromDatabase:
-          name: inventario-db
-          property: database
+        value: TU_NOMBRE_DE_BASE_DE_DATOS
       - key: DB_USERNAME
-        fromDatabase:
-          name: inventario-db
-          property: user
+        value: TU_USUARIO
       - key: DB_PASSWORD
-        fromDatabase:
-          name: inventario-db
-          property: password
+        value: TU_CONTRASEÑA
+
       - key: SESSION_DRIVER
         value: database
       - key: CACHE_STORE
