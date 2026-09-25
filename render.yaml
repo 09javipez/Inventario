@@ -24,27 +24,18 @@ services:
       - key: APP_URL
         value: https://inventario-web-cmvi.onrender.com
       - key: DB_CONNECTION
-        value: pgsql
+        value: mysql
       - key: DB_HOST
-        fromDatabase:
-          name: inventario-db
-          property: host
+        value: mysql-12f6387d-javipez1999-ca54.f.aivencloud.com
       - key: DB_PORT
-        fromDatabase:
-          name: inventario-db
-          property: port
+        value: "20117"
       - key: DB_DATABASE
-        fromDatabase:
-          name: inventario-db
-          property: database
+        value: defaultdb
       - key: DB_USERNAME
-        fromDatabase:
-          name: inventario-db
-          property: user
+        value: avnadmin
       - key: DB_PASSWORD
-        fromDatabase:
-          name: inventario-db
-          property: password
+        value: TU_CONTRASEÑA_DE_AIVEN
+
       - key: SESSION_DRIVER
         value: database
       - key: CACHE_STORE
