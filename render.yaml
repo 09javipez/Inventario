@@ -12,7 +12,6 @@ services:
     dockerfilePath: ./Dockerfile.render
     dockerContext: .
     healthCheckPath: /up
-    buildCommand: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader && php artisan migrate --force && php artisan db:seed --force
     envVars:
       - key: APP_NAME
         value: Inventario
