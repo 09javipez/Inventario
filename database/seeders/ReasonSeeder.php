@@ -51,7 +51,7 @@ class ReasonSeeder extends Seeder
         ];
 
         foreach($reasons as $reason){
-            Reason::create($reason);
+            Reason::firstOrCreate($reason);
         }
     }
 }

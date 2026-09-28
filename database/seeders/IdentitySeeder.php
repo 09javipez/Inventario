@@ -20,7 +20,7 @@ class IdentitySeeder extends Seeder
             'Cedula de ciudadania',
         ];
         foreach ($identities as $identity) {
-            Identity::create([
+            Identity::firstOrCreate([
                 'name' => $identity,
             ]);
         }
