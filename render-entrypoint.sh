@@ -7,7 +7,7 @@ echo "Running database migrations..."
 php artisan migrate --force
 
 echo "Seeding roles, permissions and default users (safe to run every boot)..."
-php artisan db:seed --class=RoleSeeder --force
+php artisan db:seed --class=seed --force
 
 echo "Linking storage..."
 php artisan storage:link || true
