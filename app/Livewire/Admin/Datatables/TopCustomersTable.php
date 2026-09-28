@@ -60,7 +60,7 @@ class TopCustomersTable extends DataTableComponent
                 ->label(fn($row) => $row->total_sales)
                 ->sortable(),
             Column::make("Monto Total")
-                ->label(fn($row) => '$/.' . number_format($row->total_amount))
+                ->label(fn($row) => '$ ' . number_format($row->total_amount, 0, ',', '.'))
                 ->sortable(fn($query, $direction) => $query->orderBy('total_amount', $direction))
         ];
     }

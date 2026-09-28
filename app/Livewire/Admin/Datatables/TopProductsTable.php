@@ -58,7 +58,7 @@ class TopProductsTable extends DataTableComponent
                 }),
             Column::make("Subtotal")
                 ->label(function ($row) {
-                    return '$/'. $row->subtotal;
+                    return '$ ' . number_format($row->subtotal, 0, ',', '.');
                 })
                 ->sortable(function ($query, $direction){
                     return $query->orderBy('subtotal', $direction);

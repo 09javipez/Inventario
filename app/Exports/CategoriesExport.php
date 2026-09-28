@@ -45,7 +45,7 @@ class CategoriesExport implements FromCollection, WithHeadings, WithStyles, Shou
     //Estilos para el archivo de excel
     public function styles(Worksheet $sheet)
     {
-        $lastRow = $sheet->getHighestColumn();
+        $lastRow = $sheet->getHighestRow();
         $lastColumn = $sheet->getHighestColumn();
 
         $fullRange = 'A1:' . $lastColumn . $lastRow;

@@ -6,7 +6,6 @@ use App\Facades\Kardex;
 use App\Models\Inventory;
 use App\Models\Movement;
 use App\Models\Product;
-use App\Services\KardexService;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 

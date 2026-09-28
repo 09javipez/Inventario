@@ -101,7 +101,7 @@ class SupplierController extends Controller
             'title' => '¡Error!',
             'text' => 'No se puede eliminar el proveedor por que tiene  ordenes de compra o compras asociadas.',
         ]);
-        return redirect()->route('admin.products.index');
+        return redirect()->route('admin.suppliers.index');
         }
 
         $supplier->delete();

@@ -5,66 +5,51 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Inventory;
 use App\Models\Product;
-use App\Models\Purchase;
-use App\Models\Sale;
+use App\Models\User;
 use Carbon\Carbon;
-
 class DashboardController extends Controller
 {
     public function index()
     {
         $data = [];
 
-        $inicioMes = Carbon::now()->startOfMonth();
-        $finMes = Carbon::now()->endOfMonth();
+        // Total de usuarios registrados
+        $data['total_users'] = User::count();
 
-            $data['sales_month'] = Sale::whereBetween('date', [
-                $inicioMes,
-                $finMes
-            ])->sum('total');
+        // Usuarios registrados recientemente
+        $data['recent_users'] = User::latest()
+            ->take(5)
+            ->get();
 
-            $data['purchases_month'] = Purchase::whereBetween('date', [
-                $inicioMes,
-                $finMes
-            ])->sum('total');
+        // Total de productos registrados
+        $data['total_products'] = Product::count();
 
-            $data['total_products'] = Product::count();
+        // Total de unidades ingresadas durante el mes actual
+         $data['income_month'] = Inventory::whereBetween('created_at', [
+             Carbon::now()->startOfMonth(),
+             Carbon::now()->endOfMonth(),
+            ])->sum('quantity_in');
 
-            $lastInventories = Inventory::query()
-                ->select('product_id', 'warehouse_id')
-                ->selectRaw('MAX(id) as last_inventory_id')
-                ->groupBy('product_id', 'warehouse_id')
-                ->get();
+        // Productos ingresados durante el mes actual
+         $data['product_income'] = Inventory::with('product')
+            ->whereBetween('created_at',[
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth(),
+         ])
+        ->where('quantity_in', '>', 0)
+        ->selectRaw('product_id, SUM(quantity_in) as quantity')
+        ->groupBy('product_id')
+        ->orderByDesc('quantity')
+        ->get();
 
-            $data['total_stock'] = Inventory::whereIn(
-                'id',
-                $lastInventories->pluck('last_inventory_id')
-            )->sum('quantity_balance');
-
-
-            $data['monthly'] = [];
-
-            for ($i = 5; $i >= 5; $i--) {
-
-                $date = Carbon::now()->subMonths($i);
-
-                $data['monthly'][] = [
-                    'month' => $date->translatedFormat('M'),
-
-                    'sales' => Sale::whereYear('date', $date->year)
-                        ->whereMonth('date', $date->month)
-                        ->sum('total'),
-
-                    'purchases' => Purchase::whereYear('date', $date->year)
-                        ->whereMonth('date', $date->month)
-                        ->sum('total'),
-                ];
-            }
-
-
-            return view(
-                'admin.dashboard.admin',
-                compact('data')
-            );
+        return view(
+            'admin.dashboard.admin',
+            compact('data')
+        );
     }
 }
+
+
+
+
+

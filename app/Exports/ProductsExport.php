@@ -50,7 +50,7 @@ class ProductsExport implements FromCollection, WithHeadings, WithStyles, Should
     //Estilos para el archivo de excel
     public function styles(Worksheet $sheet)
     {
-        $lastRow = $sheet->getHighestColumn();
+        $lastRow = $sheet->getHighestRow();
         $lastColumn = $sheet->getHighestColumn();
 
         $fullRange = 'A1:' . $lastColumn . $lastRow;
