@@ -13,6 +13,11 @@ class RoleSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * Hecho para poder correrse varias veces sin dar error (usa
+     * firstOrCreate / updateOrCreate en vez de create), porque en el
+     * plan gratis de Render no hay acceso a Shell y este seeder se
+     * ejecuta automáticamente cada vez que arranca el contenedor.
      */
     public function run(): void
     {
@@ -112,13 +117,14 @@ class RoleSeeder extends Seeder
           'update-settings',
         ];
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission]);
         }
 
-        Role::create(['name' => 'admin'])
-            ->givePermissionTo(Permission::all());
-        Role::create(['name' => 'editor'])
-            ->givePermissionTo([
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        $adminRole->syncPermissions(Permission::all());
+
+        $editorRole = Role::firstOrCreate(['name' => 'editor']);
+        $editorRole->syncPermissions([
                 'create-categories',
                 'read-categories',
                 'update-categories',
@@ -140,8 +146,9 @@ class RoleSeeder extends Seeder
                 'update-customers',
                 'delete-customers',
             ]);
-        Role::Create(['name' => 'viewer'])
-            ->givePermissionTo([
+
+        $viewerRole = Role::firstOrCreate(['name' => 'viewer']);
+        $viewerRole->syncPermissions([
                 'read-categories',
                 'read-products',
                 'read-warehouses',
@@ -161,20 +168,32 @@ class RoleSeeder extends Seeder
                 'read-roles',
                 'read-permissions',
             ]);
-        User::factory()->create([
-            'name' => 'Javier',
-            'email' => 'javipez1999@proton.me',
-            'password' => bcrypt('12345678'),
-        ])->assignRole('admin');
-        User::factory()->create([
-            'name' => 'Javier',
-            'email' => 'javipez1999@gmail.com',
-            'password' => bcrypt('12345678'),
-        ])->assignRole('editor');
-        User::factory()->create([
-            'name' => 'viewer',
-            'email' => 'prueba@gmail.com',
-            'password' => bcrypt('12345678'),
-        ])->assignRole('viewer');
+
+        $admin = User::firstOrCreate(
+            ['email' => 'javipez1999@proton.me'],
+            [
+                'name' => 'Javier',
+                'password' => bcrypt('12345678'),
+            ]
+        );
+        $admin->syncRoles(['admin']);
+
+        $editor = User::firstOrCreate(
+            ['email' => 'javipez1999@gmail.com'],
+            [
+                'name' => 'Javier',
+                'password' => bcrypt('12345678'),
+            ]
+        );
+        $editor->syncRoles(['editor']);
+
+        $viewer = User::firstOrCreate(
+            ['email' => 'prueba@gmail.com'],
+            [
+                'name' => 'viewer',
+                'password' => bcrypt('12345678'),
+            ]
+        );
+        $viewer->syncRoles(['viewer']);
     }
 }
