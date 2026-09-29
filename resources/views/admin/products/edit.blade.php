@@ -37,13 +37,13 @@
             <x-wire-input
                 label="Nombre"
                 name="name"
-                placeholder="Nombre de la categoría"
+                placeholder="Nombre de la producto"
                 value="{{ old('name',$product->name) }}"
             />
             <x-wire-textarea
                 label="Descripcíon"
                 name="description"
-                placeholder="Descripción de la categoría">
+                placeholder="Descripción de la producto">
                 {{ old('description',$product->description) }}
             </x-wire-textarea>
             <x-wire-input
