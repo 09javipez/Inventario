@@ -50,8 +50,11 @@ class ReasonSeeder extends Seeder
             ],
         ];
 
-        foreach($reasons as $reason){
-            Reason::firstOrCreate($reason);
+        foreach ($reasons as $reason) {
+            Reason::firstOrCreate(
+                ['name' => $reason['name']],
+                $reason
+            );
         }
     }
 }
